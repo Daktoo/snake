@@ -25,9 +25,7 @@ public:
         snake.push_back({WINDOW_WIDTH / (2 * CELL_SIZE), WINDOW_HEIGHT / (2 * CELL_SIZE)});
         placeFood();
         font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf");
-        scoreText.setFont(font);
-        scoreText.setString("Score: 0");
-        scoreText.setCharacterSize(24);
+        scoreText = sf::Text("Score: 0", font, 24);
         scoreText.setFillColor(sf::Color::White);
         scoreText.setPosition(sf::Vector2f(5.f, 0.f));
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -46,10 +44,10 @@ public:
     void processInput() {
         while (auto eventOpt = window.pollEvent()) {
             if (!eventOpt.has_value()) break;
-            auto& event = *eventOpt;
-            if (event.index() == sf::Event::Index::Closed) window.close();
-            if (event.index() == sf::Event::Index::KeyPressed) {
-                auto key = event.code();
+            sf::Event event = *eventOpt;
+            if (event.isClosed()) window.close();
+            if (event.isKeyPressed()) {
+                auto key = event.key();
                 if (key == sf::Keyboard::Key::W && dir != DOWN) dir = UP;
                 else if (key == sf::Keyboard::Key::S && dir != UP) dir = DOWN;
                 else if (key == sf::Keyboard::Key::A && dir != RIGHT) dir = LEFT;
