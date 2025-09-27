@@ -114,7 +114,7 @@ public:
                 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
                     sf::Vector2f mp(event.mouseButton.x, event.mouseButton.y);
                     if (resumeBtn->contains(mp)) state = PLAYING;
-                    else if (quitBtn->contains(mp)) window.close();
+                    else if (menuBtn->contains(mp)) state = MAIN_MENU;
                 }
             } else if (state == MAIN_MENU || state == GAME_OVER) {
                 if (event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left) {
@@ -125,7 +125,6 @@ public:
                     } else if (state == GAME_OVER) {
                         if (playAgainBtn->contains(mp)) { resetGame(); state = PLAYING; }
                         else if (menuBtn->contains(mp)) state = MAIN_MENU;
-                        else if (quitBtn->contains(mp)) window.close();
                     }
                 }
             }
