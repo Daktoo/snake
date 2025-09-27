@@ -2,6 +2,7 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <fstream>
 
 const int CELL_SIZE = 20;
 const int COLS = 30;
@@ -14,6 +15,38 @@ enum GameState { MAIN_MENU, PLAYING, PAUSED, GAME_OVER };
 
 struct Point { int x, y; };
 
+class Button {
+public:
+    sf::RectangleShape rect;
+    sf::Text text;
+
+    Button(const sf::Font& font, const std::string& label, float x, float y, float w=200, float h=50) {
+        rect.setSize({w, h});
+        rect.setFillColor(sf::Color(50, 50, 50));
+        rect.setOutlineColor(sf::Color::White);
+        rect.setOutlineThickness(2);
+        rect.setPosition(x, y);
+
+        text.setFont(font);
+        text.setString(label);
+        text.setCharacterSize(20);
+        text.setFillColor(sf::Color::White);
+
+        sf::FloatRect tb = text.getLocalBounds();
+        text.setOrigin(tb.width/2, tb.height/2);
+        text.setPosition(x + w/2, y + h/2 - 5);
+    }
+
+    bool contains(sf::Vector2f pos) const {
+        return rect.getGlobalBounds().contains(pos);
+    }
+
+    void draw(sf::RenderWindow& win) {
+        win.draw(rect);
+        win.draw(text);
+    }
+};
+
 class SnakeGame {
 private:
     sf::RenderWindow window;
@@ -21,43 +54,43 @@ private:
     Point food;
     Direction dir;
     int score;
+    int highScore;
     sf::Font font;
     sf::Text scoreText;
-    sf::Text menuText;
-    sf::Text pauseText;
-    sf::Text gameOverText;
     float moveDelay;
     sf::Clock clock;
     GameState state;
 
+    Button* playBtn;
+    Button* quitBtn;
+    Button* resumeBtn;
+    Button* menuBtn;
+
 public:
     SnakeGame() : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Dakto INC Snake"),
-                  dir(RIGHT), score(0), moveDelay(0.15f), state(MAIN_MENU) {
+                  dir(RIGHT), score(0), moveDelay(0.15f), state(MAIN_MENU),
+                  playBtn(nullptr), quitBtn(nullptr), resumeBtn(nullptr), menuBtn(nullptr) {
         if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {}
-        
+
         scoreText.setFont(font);
         scoreText.setCharacterSize(16);
         scoreText.setFillColor(sf::Color::White);
         scoreText.setPosition(5, 0);
 
-        menuText.setFont(font);
-        menuText.setCharacterSize(24);
-        menuText.setFillColor(sf::Color::Cyan);
-        menuText.setString("Welcome to Dakto Snake!\n\nPress ENTER to Play\nPress Q to Quit");
-        menuText.setPosition(50, WINDOW_HEIGHT/3);
+        playBtn   = new Button(font, "Play", 100, 150);
+        quitBtn   = new Button(font, "Quit", 100, 220);
+        resumeBtn = new Button(font, "Resume", 100, 150);
+        menuBtn   = new Button(font, "Main Menu", 100, 220);
 
-        pauseText.setFont(font);
-        pauseText.setCharacterSize(24);
-        pauseText.setFillColor(sf::Color::Yellow);
-        pauseText.setString("Game Paused\n\nPress P to Resume\nPress Q to Quit");
-        pauseText.setPosition(70, WINDOW_HEIGHT/3);
-
-        gameOverText.setFont(font);
-        gameOverText.setCharacterSize(24);
-        gameOverText.setFillColor(sf::Color::Red);
-        gameOverText.setPosition(50, WINDOW_HEIGHT/3);
-
+        loadHighScore();
         window.setFramerateLimit(60);
+    }
+
+    ~SnakeGame() {
+        delete playBtn;
+        delete quitBtn;
+        delete resumeBtn;
+        delete menuBtn;
     }
 
     void resetGame() {
@@ -67,6 +100,20 @@ public:
         score = 0;
         placeFood();
         clock.restart();
+    }
+
+    void loadHighScore() {
+        std::ifstream f("highscore.txt");
+        if (f) f >> highScore;
+        else highScore = 0;
+    }
+
+    void saveHighScore() {
+        if (score > highScore) {
+            highScore = score;
+            std::ofstream f("highscore.txt");
+            f << highScore;
+        }
     }
 
     void placeFood() {
@@ -85,34 +132,33 @@ public:
             if (event.type == sf::Event::Closed) window.close();
 
             if (state == MAIN_MENU) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Enter) {
-                        resetGame();
-                        state = PLAYING;
-                    }
-                    if (event.key.code == sf::Keyboard::Q) window.close();
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    auto mp = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
+                    if (playBtn->contains(mp)) { resetGame(); state = PLAYING; }
+                    if (quitBtn->contains(mp)) { window.close(); }
                 }
-            } 
+            }
             else if (state == PLAYING) {
                 if (event.type == sf::Event::KeyPressed) {
                     if (event.key.code == sf::Keyboard::W && dir != DOWN) dir = UP;
                     else if (event.key.code == sf::Keyboard::S && dir != UP) dir = DOWN;
                     else if (event.key.code == sf::Keyboard::A && dir != RIGHT) dir = LEFT;
                     else if (event.key.code == sf::Keyboard::D && dir != LEFT) dir = RIGHT;
-                    else if (event.key.code == sf::Keyboard::Q) window.close();
                     else if (event.key.code == sf::Keyboard::P) state = PAUSED;
                 }
             }
             else if (state == PAUSED) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::P) state = PLAYING;
-                    else if (event.key.code == sf::Keyboard::Q) window.close();
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    auto mp = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
+                    if (resumeBtn->contains(mp)) { state = PLAYING; }
+                    if (quitBtn->contains(mp)) { window.close(); }
                 }
             }
             else if (state == GAME_OVER) {
-                if (event.type == sf::Event::KeyPressed) {
-                    if (event.key.code == sf::Keyboard::Enter) state = MAIN_MENU;
-                    else if (event.key.code == sf::Keyboard::Q) window.close();
+                if (event.type == sf::Event::MouseButtonPressed) {
+                    auto mp = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
+                    if (menuBtn->contains(mp)) { state = MAIN_MENU; }
+                    if (quitBtn->contains(mp)) { window.close(); }
                 }
             }
         }
@@ -134,13 +180,11 @@ public:
         }
 
         if (newHead.x < 0 || newHead.x >= COLS || newHead.y < 0 || newHead.y >= ROWS) {
-            gameOver();
-            return;
+            gameOver(); return;
         }
 
         for (auto &s : snake) if (s.x == newHead.x && s.y == newHead.y) {
-            gameOver();
-            return;
+            gameOver(); return;
         }
 
         snake.insert(snake.begin(), newHead);
@@ -154,8 +198,7 @@ public:
     }
 
     void gameOver() {
-        gameOverText.setString("Game Over! Score: " + std::to_string(score) +
-                               "\n\nPress ENTER for Menu\nPress Q to Quit");
+        saveHighScore();
         state = GAME_OVER;
     }
 
@@ -163,8 +206,17 @@ public:
         window.clear(sf::Color::Black);
 
         if (state == MAIN_MENU) {
-            window.draw(menuText);
-        } 
+            sf::Text title("Dakto Snake", font, 32);
+            title.setFillColor(sf::Color::Cyan);
+            title.setPosition(80, 50);
+            window.draw(title);
+            playBtn->draw(window);
+            quitBtn->draw(window);
+
+            sf::Text hs("High Score: " + std::to_string(highScore), font, 18);
+            hs.setPosition(100, 300);
+            window.draw(hs);
+        }
         else if (state == PLAYING) {
             sf::RectangleShape rect(sf::Vector2f(CELL_SIZE-1, CELL_SIZE-1));
             rect.setFillColor(sf::Color::Green);
@@ -181,10 +233,23 @@ public:
             window.draw(scoreText);
         }
         else if (state == PAUSED) {
-            window.draw(pauseText);
+            sf::Text paused("Game Paused", font, 28);
+            paused.setFillColor(sf::Color::Yellow);
+            paused.setPosition(80, 80);
+            window.draw(paused);
+
+            resumeBtn->draw(window);
+            quitBtn->draw(window);
         }
         else if (state == GAME_OVER) {
-            window.draw(gameOverText);
+            sf::Text over("Game Over!\nScore: " + std::to_string(score) +
+                          "\nHigh Score: " + std::to_string(highScore), font, 24);
+            over.setFillColor(sf::Color::Red);
+            over.setPosition(60, 80);
+            window.draw(over);
+
+            menuBtn->draw(window);
+            quitBtn->draw(window);
         }
 
         window.display();
