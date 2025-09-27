@@ -14,6 +14,9 @@ class SnakeGame : Form
     private string direction = "RIGHT";
     private int score = 0;
     private Image? backgroundImage = null;
+    private bool isFullscreen = false;
+    private FormBorderStyle prevBorderStyle;
+    private Rectangle prevBounds;
 
     public SnakeGame()
     {
@@ -43,6 +46,48 @@ class SnakeGame : Form
         }
     }
 
+    private void ShowMenu()
+    {
+        Button startButton = new Button() { Text = "Start Game", Size = new Size(120, 50), Location = new Point((ClientSize.Width - 120) / 2, (ClientSize.Height - 50) / 2 - 30) };
+        startButton.Click += (s, e) => StartGame();
+        Button quitButton = new Button() { Text = "Quit", Size = new Size(120, 50), Location = new Point((ClientSize.Width - 120) / 2, (ClientSize.Height - 50) / 2 + 30) };
+        quitButton.Click += (s, e) => this.Close();
+        this.Controls.Add(startButton);
+        this.Controls.Add(quitButton);
+    }
+
+    private void HideMenu()
+    {
+        showMenu = false;
+        for (int i = this.Controls.Count - 1; i >= 0; i--)
+        {
+            if (this.Controls[i] is Button)
+                this.Controls.RemoveAt(i);
+        }
+    }
+
+    private void StartGame()
+    {
+        HideMenu();
+        snake.Clear();
+        cols = Math.Max(minCols, this.ClientSize.Width / cellSize);
+        rows = Math.Max(minRows, (this.ClientSize.Height - 30) / cellSize);
+        snake.Add(new Point(cols / 2, rows / 2));
+        score = 0;
+        direction = "RIGHT";
+        PlaceFood();
+        timer.Interval = 150;
+        timer.Tick -= Timer_Tick;
+        timer.Tick += Timer_Tick;
+        timer.Start();
+    }
+
+    private void Timer_Tick(object? sender, EventArgs e)
+    {
+        MoveSnake();
+        Invalidate();
+    }
+
     private void OnResize(object? sender, EventArgs e)
     {
         int availableWidth = this.ClientSize.Width;
@@ -67,7 +112,6 @@ class SnakeGame : Form
         if (showMenu) return;
         Point head = snake[0];
         Point newHead = head;
-
         switch (direction)
         {
             case "UP": newHead = new Point(head.X, head.Y - 1); break;
@@ -87,7 +131,7 @@ class SnakeGame : Form
         snake.Insert(0, newHead);
 
         if (newHead == food)
-        { 
+        {
             score++;
             PlaceFood();
         }
@@ -97,44 +141,7 @@ class SnakeGame : Form
         }
     }
 
-    private void HideMenu()
-    {
-        showMenu = false;
-        foreach (Control control in this.Controls)
-        {
-            if (control is Button)
-            {
-                this.Controls.Remove(control);
-            }
-        }
-    }
-
-    private void StartGame()
-    {
-        HideMenu();
-        snake.Clear();
-        cols = Math.Max(minCols, this.ClientSize.Width / cellSize);
-        rows = Math.Max(minRows, (this.ClientSize.Height - 30) / cellSize);
-        snake.Add(new Point(cols / 2, rows / 2));
-        score = 0;
-        direction = "RIGHT";
-        PlaceFood();
-        timer.Interval = 150;
-        timer.Tick -= (s, e) => { MoveSnake(); Invalidate(); };
-        timer.Tick += (s, e) => { MoveSnake(); Invalidate(); };
-        timer.Start();
-    }
-        else
-        {
-            snake.RemoveAt(snake.Count - 1);
-        }
-    }
-
-    private bool isFullscreen = false;
-    private FormBorderStyle prevBorderStyle;
-    private Rectangle prevBounds;
-
-    private void OnKeyDown(object? sender, KeyEventArgs e)
+    private void OnKeyDown(object sender, KeyEventArgs e)
     {
         switch (e.KeyCode)
         {
@@ -143,9 +150,7 @@ class SnakeGame : Form
             case Keys.A: case Keys.Left: if (direction != "RIGHT") direction = "LEFT"; break;
             case Keys.D: case Keys.Right: if (direction != "LEFT") direction = "RIGHT"; break;
             case Keys.Q: this.Close(); break;
-            case Keys.F11:
-                ToggleFullscreen();
-                break;
+            case Keys.F11: ToggleFullscreen(); break;
         }
     }
 
@@ -168,17 +173,13 @@ class SnakeGame : Form
         }
     }
 
-    private void OnPaint(object? sender, PaintEventArgs e)
+    private void OnPaint(object sender, PaintEventArgs e)
     {
         Graphics g = e.Graphics;
         if (backgroundImage != null)
-        {
             g.DrawImage(backgroundImage, 0, 0, cols * cellSize, rows * cellSize);
-        }
         else
-        {
             g.Clear(Color.Black);
-        }
 
         Brush snakeBrush = Brushes.Lime;
         Brush foodBrush = Brushes.Red;
@@ -202,3 +203,4 @@ class SnakeGame : Form
         Application.EnableVisualStyles();
         Application.Run(new SnakeGame());
     }
+}
