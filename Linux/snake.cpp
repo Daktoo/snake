@@ -2,10 +2,11 @@
 #include <vector>
 #include <cstdlib>
 #include <ctime>
+#include <optional>
 #include <algorithm>
 
-constexpr int WINDOW_WIDTH = 800;
-constexpr int WINDOW_HEIGHT = 600;
+constexpr unsigned int WINDOW_WIDTH = 800;
+constexpr unsigned int WINDOW_HEIGHT = 600;
 constexpr int CELL_SIZE = 20;
 
 enum Direction { UP, DOWN, LEFT, RIGHT };
@@ -34,16 +35,19 @@ private:
 };
 
 SnakeGame::SnakeGame()
-    : window(sf::VideoMode(WINDOW_WIDTH, WINDOW_HEIGHT), "Snake"),
+    : window(sf::VideoMode(sf::Vector2u{WINDOW_WIDTH, WINDOW_HEIGHT}), "Snake"),
       dir(RIGHT), score(0), moveDelay(0.15f), moveTimer(0.f) {
 
-    snake.push_back({WINDOW_WIDTH / (2 * CELL_SIZE), WINDOW_HEIGHT / (2 * CELL_SIZE)});
+    snake.push_back({static_cast<int>(WINDOW_WIDTH / (2 * CELL_SIZE)), static_cast<int>(WINDOW_HEIGHT / (2 * CELL_SIZE))});
 
-    font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf");
+    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
+        throw std::runtime_error("Failed to load font");
+    }
 
-    scoreText = sf::Text("Score: 0", font, 24);
+    scoreText = sf::Text("", font, 24);  // Construct AFTER font is loaded
     scoreText.setFillColor(sf::Color::White);
-    scoreText.setPosition({5.f, 0.f});
+    scoreText.setString("Score: 0");
+    scoreText.setPosition(sf::Vector2f(5.f, 0.f));
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
     placeFood();
@@ -57,8 +61,9 @@ void SnakeGame::placeFood() {
 }
 
 void SnakeGame::processInput() {
-    sf::Event event;
-    while (window.pollEvent(event)) {
+    while (auto eventOpt = window.pollEvent()) {
+        sf::Event event = *eventOpt;
+
         if (event.type == sf::Event::Closed)
             window.close();
 
@@ -79,13 +84,15 @@ void SnakeGame::update(float dt) {
     moveTimer = 0.f;
 
     sf::Vector2i newHead = snake.front();
-    if (dir == UP) newHead.y--;
-    else if (dir == DOWN) newHead.y++;
-    else if (dir == LEFT) newHead.x--;
-    else if (dir == RIGHT) newHead.x++;
+    switch (dir) {
+        case UP:    newHead.y--; break;
+        case DOWN:  newHead.y++; break;
+        case LEFT:  newHead.x--; break;
+        case RIGHT: newHead.x++; break;
+    }
 
-    if (newHead.x < 0 || newHead.x >= WINDOW_WIDTH / CELL_SIZE ||
-        newHead.y < 0 || newHead.y >= WINDOW_HEIGHT / CELL_SIZE ||
+    if (newHead.x < 0 || newHead.x >= static_cast<int>(WINDOW_WIDTH / CELL_SIZE) ||
+        newHead.y < 0 || newHead.y >= static_cast<int>(WINDOW_HEIGHT / CELL_SIZE) ||
         std::find(snake.begin(), snake.end(), newHead) != snake.end()) {
         window.close();
         return;
@@ -105,15 +112,15 @@ void SnakeGame::update(float dt) {
 void SnakeGame::render() {
     window.clear();
 
-    sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1, CELL_SIZE - 1));
+    sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1.f, CELL_SIZE - 1.f));
     cell.setFillColor(sf::Color::Green);
     for (auto &s : snake) {
-        cell.setPosition(s.x * CELL_SIZE, s.y * CELL_SIZE);
+        cell.setPosition(sf::Vector2f(s.x * CELL_SIZE, s.y * CELL_SIZE));
         window.draw(cell);
     }
 
     cell.setFillColor(sf::Color::Red);
-    cell.setPosition(food.x * CELL_SIZE, food.y * CELL_SIZE);
+    cell.setPosition(sf::Vector2f(food.x * CELL_SIZE, food.y * CELL_SIZE));
     window.draw(cell);
 
     window.draw(scoreText);
@@ -131,7 +138,12 @@ void SnakeGame::run() {
 }
 
 int main() {
-    SnakeGame game;
-    game.run();
+    try {
+        SnakeGame game;
+        game.run();
+    } catch (const std::exception &e) {
+        printf("Error: %s\n", e.what());
+        return 1;
+    }
     return 0;
 }
