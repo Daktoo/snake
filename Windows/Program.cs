@@ -124,20 +124,6 @@ class SnakeGame : Form
         timer.Tick += (s, e) => { MoveSnake(); Invalidate(); };
         timer.Start();
     }
-        {
-            timer.Stop();
-            MessageBox.Show($"Game Over! Score: {score}");
-            this.Close();
-            return;
-        }
-
-        snake.Insert(0, newHead);
-
-        if (newHead == food)
-        { 
-            score++;
-            PlaceFood();
-        }
         else
         {
             snake.RemoveAt(snake.Count - 1);
@@ -216,4 +202,3 @@ class SnakeGame : Form
         Application.EnableVisualStyles();
         Application.Run(new SnakeGame());
     }
-}
