@@ -4,6 +4,7 @@
 #include <ctime>
 #include <optional>
 #include <algorithm>
+#include <stdexcept>
 
 constexpr unsigned int WINDOW_WIDTH = 800;
 constexpr unsigned int WINDOW_HEIGHT = 600;
@@ -38,14 +39,15 @@ SnakeGame::SnakeGame()
     : window(sf::VideoMode(sf::Vector2u{WINDOW_WIDTH, WINDOW_HEIGHT}), "Snake"),
       dir(RIGHT), score(0), moveDelay(0.15f), moveTimer(0.f) {
 
-    snake.push_back({static_cast<int>(WINDOW_WIDTH / (2 * CELL_SIZE)), static_cast<int>(WINDOW_HEIGHT / (2 * CELL_SIZE))});
+    snake.push_back({static_cast<int>(WINDOW_WIDTH / (2 * CELL_SIZE)),
+                     static_cast<int>(WINDOW_HEIGHT / (2 * CELL_SIZE))});
 
     if (!font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
         throw std::runtime_error("Failed to load font");
     }
 
-    // Default constructor doesn't exist, construct with font after loading
-    scoreText = sf::Text(sf::String("Score: 0"), font, 24);
+    // Construct scoreText after font is loaded
+    scoreText = sf::Text("Score: 0", font, 24);
     scoreText.setFillColor(sf::Color::White);
     scoreText.setPosition(sf::Vector2f(5.f, 0.f));
 
@@ -65,11 +67,11 @@ void SnakeGame::processInput() {
         if (!eventOpt.has_value()) break;
         auto event = *eventOpt;
 
-        if (event.isClosed()) {
+        if (event.type() == sf::Event::Closed) {
             window.close();
         }
 
-        if (event.isKeyPressed()) {
+        if (event.type() == sf::Event::KeyPressed) {
             auto key = event.key().code;
             if (key == sf::Keyboard::Key::W && dir != DOWN) dir = UP;
             else if (key == sf::Keyboard::Key::S && dir != UP) dir = DOWN;
@@ -117,12 +119,14 @@ void SnakeGame::render() {
     sf::RectangleShape cell(sf::Vector2f(static_cast<float>(CELL_SIZE - 1), static_cast<float>(CELL_SIZE - 1)));
     cell.setFillColor(sf::Color::Green);
     for (auto &s : snake) {
-        cell.setPosition(sf::Vector2f(static_cast<float>(s.x * CELL_SIZE), static_cast<float>(s.y * CELL_SIZE)));
+        cell.setPosition(sf::Vector2f(static_cast<float>(s.x * CELL_SIZE),
+                                      static_cast<float>(s.y * CELL_SIZE)));
         window.draw(cell);
     }
 
     cell.setFillColor(sf::Color::Red);
-    cell.setPosition(sf::Vector2f(static_cast<float>(food.x * CELL_SIZE), static_cast<float>(food.y * CELL_SIZE)));
+    cell.setPosition(sf::Vector2f(static_cast<float>(food.x * CELL_SIZE),
+                                  static_cast<float>(food.y * CELL_SIZE)));
     window.draw(cell);
 
     window.draw(scoreText);
