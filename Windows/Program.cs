@@ -19,23 +19,13 @@ class SnakeGame : Form
     {
         ShowMenu();
         this.Text = "Dakto INC Snake";
-    this.ClientSize = new Size(cols * cellSize, rows * cellSize + 30);
-    this.FormBorderStyle = FormBorderStyle.Sizable;
-    this.MaximizeBox = true;
-    this.Resize += new EventHandler(OnResize);
-    private void OnResize(object? sender, EventArgs e)
-    {
-        int availableWidth = this.ClientSize.Width;
-        int availableHeight = this.ClientSize.Height - 30;
-        cellSize = Math.Min(availableWidth / minCols, availableHeight / minRows);
-        cols = Math.Max(minCols, availableWidth / cellSize);
-        rows = Math.Max(minRows, availableHeight / cellSize);
-        Invalidate();
-    }
+        this.ClientSize = new Size(cols * cellSize, rows * cellSize + 30);
+        this.FormBorderStyle = FormBorderStyle.Sizable;
+        this.MaximizeBox = true;
+        this.Resize += new EventHandler(OnResize);
         this.DoubleBuffered = true;
-
-    this.KeyDown += new KeyEventHandler(OnKeyDown);
-    this.Paint += new PaintEventHandler(OnPaint);
+        this.KeyDown += new KeyEventHandler(OnKeyDown);
+        this.Paint += new PaintEventHandler(OnPaint);
 
         try
         {
@@ -53,6 +43,16 @@ class SnakeGame : Form
         }
     }
 
+    private void OnResize(object? sender, EventArgs e)
+    {
+        int availableWidth = this.ClientSize.Width;
+        int availableHeight = this.ClientSize.Height - 30;
+        cellSize = Math.Min(availableWidth / minCols, availableHeight / minRows);
+        cols = Math.Max(minCols, availableWidth / cellSize);
+        rows = Math.Max(minRows, availableHeight / cellSize);
+        Invalidate();
+    }
+
     private void PlaceFood()
     {
         Random rand = new Random();
@@ -64,6 +64,7 @@ class SnakeGame : Form
 
     private void MoveSnake()
     {
+        if (showMenu) return;
         Point head = snake[0];
         Point newHead = head;
 
@@ -76,24 +77,24 @@ class SnakeGame : Form
         }
 
         if (newHead.X < 0 || newHead.X >= cols || newHead.Y < 0 || newHead.Y >= rows || snake.Contains(newHead))
-    private void ShowMenu()
-    {
-        showMenu = true;
-        Button playButton = new Button();
-        playButton.Text = "Play";
-        playButton.Font = new Font("Arial", 16, FontStyle.Bold);
-        playButton.Size = new Size(200, 60);
-        playButton.Location = new Point((this.ClientSize.Width - playButton.Width) / 2, this.ClientSize.Height / 2 - 80);
-        playButton.Click += (s, e) => StartGame();
-        this.Controls.Add(playButton);
+        {
+            timer.Stop();
+            MessageBox.Show($"Game Over! Score: {score}");
+            this.Close();
+            return;
+        }
 
-        Button quitButton = new Button();
-        quitButton.Text = "Quit";
-        quitButton.Font = new Font("Arial", 16, FontStyle.Bold);
-        quitButton.Size = new Size(200, 60);
-        quitButton.Location = new Point((this.ClientSize.Width - quitButton.Width) / 2, this.ClientSize.Height / 2 + 10);
-        quitButton.Click += (s, e) => this.Close();
-        this.Controls.Add(quitButton);
+        snake.Insert(0, newHead);
+
+        if (newHead == food)
+        { 
+            score++;
+            PlaceFood();
+        }
+        else
+        {
+            snake.RemoveAt(snake.Count - 1);
+        }
     }
 
     private void HideMenu()
