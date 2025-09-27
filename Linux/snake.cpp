@@ -52,7 +52,7 @@ public:
     }
 
     void processInput() {
-        sf:Event event;
+        sf::Event event;
         while (window.pollEvent(event)) {
             if (event.type == sf::Event::Closed) window.close();
             else if (event.type == sf::Event::KeyPressed) {
@@ -96,7 +96,7 @@ public:
     }
 
     void gameOver() {
-        sf:Text msg("Game Over. Score: " + std::to_string(score), font, 24);
+        sf::Text msg("Game Over. Score: " + std::to_string(score), font, 24);
         msg.setFillColor(sf::Color::Red);
         msg.setPosition(50, WINDOW_HEIGHT / 2 - 20);
 
