@@ -170,16 +170,20 @@ public:
         if (state == MAIN_MENU) {
             sf::Text title("Dakto INC Snake!", font, 48);
             title.setFillColor(sf::Color::White);
-            title.setPosition(WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 150);
+
+            sf::FloatRect textBounds = title.getLocalBounds();
+            title.setOrigin(textBounds.left + textBounds.width / 2, textBounds.top + textBounds.height / 2);
+            title.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 150);
+
             window.draw(title);
             playBtn->draw(window);
             quitBtn->draw(window);
         } else if (state == PLAYING || state == PAUSED) {
             sf::RectangleShape rect(sf::Vector2f(CELL_SIZE-1, CELL_SIZE-1));
-            rect.setFillColor(sf::Color::Green);
             for (auto &s : snake) {
                 rect.setPosition(s.x * CELL_SIZE, s.y * CELL_SIZE);
                 window.draw(rect);
+            }
             }
 
             rect.setFillColor(sf::Color::Red);
