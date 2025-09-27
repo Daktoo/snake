@@ -168,7 +168,7 @@ public:
         window.clear(sf::Color::Black);
 
         if (state == MAIN_MENU) {
-            sf::Text title("Dakto Snake", font, 32);
+            sf::Text title("Dakto INC Snake!", font, 48);
             title.setFillColor(sf::Color::White);
             title.setPosition(WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 150);
             window.draw(title);
