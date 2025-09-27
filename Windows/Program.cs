@@ -11,10 +11,11 @@ class SnakeGame : Form
     private int rows = 20, cols = 30, cellSize = 20;
     private string direction = "RIGHT";
     private int score = 0;
+    private Image backgroundImage;
 
     public SnakeGame()
     {
-        this.Text = "Snake Game";
+        this.Text = "Dakto INC Snake";
         this.ClientSize = new Size(cols * cellSize, rows * cellSize + 30);
         this.FormBorderStyle = FormBorderStyle.FixedSingle;
         this.MaximizeBox = false;
@@ -29,6 +30,15 @@ class SnakeGame : Form
 
         this.KeyDown += new KeyEventHandler(OnKeyDown);
         this.Paint += new PaintEventHandler(OnPaint);
+
+        try
+        {
+            backgroundImage = Image.FromFile("background.png");
+        }
+        catch
+        {
+            backgroundImage = null;
+        }
     }
 
     private void PlaceFood()
@@ -89,7 +99,14 @@ class SnakeGame : Form
     private void OnPaint(object sender, PaintEventArgs e)
     {
         Graphics g = e.Graphics;
-        g.Clear(Color.Black);
+        if (backgroundImage != null)
+        {
+            g.DrawImage(backgroundImage, 0, 0, cols * cellSize, rows * cellSize);
+        }
+        else
+        {
+            g.Clear(Color.Black);
+        }
 
         Brush snakeBrush = Brushes.Lime;
         Brush foodBrush = Brushes.Red;
