@@ -40,13 +40,13 @@ SnakeGame::SnakeGame()
 
     snake.push_back({static_cast<int>(WINDOW_WIDTH / (2 * CELL_SIZE)), static_cast<int>(WINDOW_HEIGHT / (2 * CELL_SIZE))});
 
-    if (!font.loadFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
+    if (!font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf")) {
         throw std::runtime_error("Failed to load font");
     }
 
-    scoreText = sf::Text("", font, 24);  // Construct AFTER font is loaded
+    // Default constructor doesn't exist, construct with font after loading
+    scoreText = sf::Text(sf::String("Score: 0"), font, 24);
     scoreText.setFillColor(sf::Color::White);
-    scoreText.setString("Score: 0");
     scoreText.setPosition(sf::Vector2f(5.f, 0.f));
 
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
@@ -62,18 +62,20 @@ void SnakeGame::placeFood() {
 
 void SnakeGame::processInput() {
     while (auto eventOpt = window.pollEvent()) {
-        sf::Event event = *eventOpt;
+        if (!eventOpt.has_value()) break;
+        auto event = *eventOpt;
 
-        if (event.type == sf::Event::Closed)
+        if (event.isClosed()) {
             window.close();
+        }
 
-        if (event.type == sf::Event::KeyPressed) {
-            auto key = event.key.code;
-            if (key == sf::Keyboard::W && dir != DOWN) dir = UP;
-            else if (key == sf::Keyboard::S && dir != UP) dir = DOWN;
-            else if (key == sf::Keyboard::A && dir != RIGHT) dir = LEFT;
-            else if (key == sf::Keyboard::D && dir != LEFT) dir = RIGHT;
-            else if (key == sf::Keyboard::Q) window.close();
+        if (event.isKeyPressed()) {
+            auto key = event.key().code;
+            if (key == sf::Keyboard::Key::W && dir != DOWN) dir = UP;
+            else if (key == sf::Keyboard::Key::S && dir != UP) dir = DOWN;
+            else if (key == sf::Keyboard::Key::A && dir != RIGHT) dir = LEFT;
+            else if (key == sf::Keyboard::Key::D && dir != LEFT) dir = RIGHT;
+            else if (key == sf::Keyboard::Key::Q) window.close();
         }
     }
 }
@@ -112,15 +114,15 @@ void SnakeGame::update(float dt) {
 void SnakeGame::render() {
     window.clear();
 
-    sf::RectangleShape cell(sf::Vector2f(CELL_SIZE - 1.f, CELL_SIZE - 1.f));
+    sf::RectangleShape cell(sf::Vector2f(static_cast<float>(CELL_SIZE - 1), static_cast<float>(CELL_SIZE - 1)));
     cell.setFillColor(sf::Color::Green);
     for (auto &s : snake) {
-        cell.setPosition(sf::Vector2f(s.x * CELL_SIZE, s.y * CELL_SIZE));
+        cell.setPosition(sf::Vector2f(static_cast<float>(s.x * CELL_SIZE), static_cast<float>(s.y * CELL_SIZE)));
         window.draw(cell);
     }
 
     cell.setFillColor(sf::Color::Red);
-    cell.setPosition(sf::Vector2f(food.x * CELL_SIZE, food.y * CELL_SIZE));
+    cell.setPosition(sf::Vector2f(static_cast<float>(food.x * CELL_SIZE), static_cast<float>(food.y * CELL_SIZE)));
     window.draw(cell);
 
     window.draw(scoreText);
