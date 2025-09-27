@@ -155,10 +155,28 @@ public:
                 }
             }
             else if (state == GAME_OVER) {
+                if (!playAgainBtn) {
+                    playAgainBtn = new Button(font, "Play Again", {WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2}, {200, 50});}
+                }
+                if (!menuBtn) {
+                    menuBtn = new Button(font, "Main Menu", {WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 + 70}, {200, 50});
+                }
+                if (!quitBtn) {
+                    quitBtn = new Button(font, "Quit", {WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 + 140}, {200, 50});
+                }
+
                 if (event.type == sf::Event::MouseButtonPressed) {
                     auto mp = window.mapPixelToCoords({event.mouseButton.x, event.mouseButton.y});
-                    if (menuBtn->contains(mp)) { state = MAIN_MENU; }
-                    if (quitBtn->contains(mp)) { window.close(); }
+                    if (playAgainBtn->contains(mp)) {
+                        resetGame();
+                        state = PLAYING;
+                    }
+                    if (menuBtn->contains(mp)) {
+                        state = MAIN_MENU;
+                    }
+                    if (quitBtn->contains(mp)) {
+                        window.close();
+                    }
                 }
             }
         }
@@ -242,12 +260,12 @@ public:
             quitBtn->draw(window);
         }
         else if (state == GAME_OVER) {
-            sf::Text over("Game Over!\nScore: " + std::to_string(score) +
-                          "\nHigh Score: " + std::to_string(highScore), font, 24);
-            over.setFillColor(sf::Color::Red);
-            over.setPosition(60, 80);
-            window.draw(over);
+            sf::Text msg("Game Over. Score: " + std::to_string(score), font, 24);
+            msg.setFillColor(sf::Color::Red);
+            msg.setPosition(WINDOW_WIDTH/2 - msg.getLocalBounds().width/2, WINDOW_HEIGHT/2 - 100);
 
+            window.draw(msg);
+            playAgainBtn->draw(window);
             menuBtn->draw(window);
             quitBtn->draw(window);
         }
