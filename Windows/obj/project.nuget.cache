@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "dgSpecHash": "CeNkvN7CLVY=",
+  "success": true,
+  "projectFilePath": "/home/dakto/Documents/Snake/Windows/Snake.csproj",
+  "expectedPackageFiles": [
+    "/home/dakto/.nuget/packages/microsoft.aspnetcore.app.ref/9.0.9/microsoft.aspnetcore.app.ref.9.0.9.nupkg.sha512"
+  ],
+  "logs": []
+}
