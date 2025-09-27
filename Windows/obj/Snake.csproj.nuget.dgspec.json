@@ -1,20 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "/home/dakto/Documents/Snake/Windows/Snake.csproj": {}
+    "C:\\Users\\dakto\\Documents\\snake\\Windows\\Snake.csproj": {}
   },
   "projects": {
-    "/home/dakto/Documents/Snake/Windows/Snake.csproj": {
+    "C:\\Users\\dakto\\Documents\\snake\\Windows\\Snake.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "/home/dakto/Documents/Snake/Windows/Snake.csproj",
+        "projectUniqueName": "C:\\Users\\dakto\\Documents\\snake\\Windows\\Snake.csproj",
         "projectName": "Snake",
-        "projectPath": "/home/dakto/Documents/Snake/Windows/Snake.csproj",
-        "packagesPath": "/home/dakto/.nuget/packages/",
-        "outputPath": "/home/dakto/Documents/Snake/Windows/obj/",
+        "projectPath": "C:\\Users\\dakto\\Documents\\snake\\Windows\\Snake.csproj",
+        "packagesPath": "C:\\Users\\dakto\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\dakto\\Documents\\snake\\Windows\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "/home/dakto/.nuget/NuGet/NuGet.Config"
+          "C:\\Users\\dakto\\AppData\\Roaming\\NuGet\\NuGet.Config"
         ],
         "originalTargetFrameworks": [
           "net9.0-windows"
@@ -38,7 +38,7 @@
           "auditLevel": "low",
           "auditMode": "direct"
         },
-        "SdkAnalysisLevel": "9.0.100"
+        "SdkAnalysisLevel": "9.0.300"
       },
       "frameworks": {
         "net9.0-windows7.0": {
@@ -54,18 +54,15 @@
           ],
           "assetTargetFallback": true,
           "warn": true,
-          "downloadDependencies": [
-            {
-              "name": "Microsoft.AspNetCore.App.Ref",
-              "version": "[9.0.9, 9.0.9]"
-            }
-          ],
           "frameworkReferences": {
             "Microsoft.NETCore.App": {
               "privateAssets": "all"
+            },
+            "Microsoft.WindowsDesktop.App.WindowsForms": {
+              "privateAssets": "none"
             }
           },
-          "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/9.0.110/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.305/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

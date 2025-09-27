@@ -1,0 +1,15 @@
+C:\Users\dakto\Documents\snake\Windows\bin\Release-v2.1-TEST\net9.0-windows\Snake.exe
+C:\Users\dakto\Documents\snake\Windows\bin\Release-v2.1-TEST\net9.0-windows\Snake.deps.json
+C:\Users\dakto\Documents\snake\Windows\bin\Release-v2.1-TEST\net9.0-windows\Snake.runtimeconfig.json
+C:\Users\dakto\Documents\snake\Windows\bin\Release-v2.1-TEST\net9.0-windows\Snake.dll
+C:\Users\dakto\Documents\snake\Windows\bin\Release-v2.1-TEST\net9.0-windows\Snake.pdb
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.AssemblyInfoInputs.cache
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.AssemblyInfo.cs
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.csproj.CoreCompileInputs.cache
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.sourcelink.json
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.dll
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\refint\Snake.dll
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.pdb
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\Snake.genruntimeconfig.cache
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v2.1-TEST\net9.0-windows\ref\Snake.dll

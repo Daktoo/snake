@@ -1,0 +1,5 @@
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v1.2-TEST\net9.0-windows\Snake.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v1.2-TEST\net9.0-windows\Snake.AssemblyInfoInputs.cache
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v1.2-TEST\net9.0-windows\Snake.AssemblyInfo.cs
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v1.2-TEST\net9.0-windows\Snake.csproj.CoreCompileInputs.cache
+C:\Users\dakto\Documents\snake\Windows\obj\Release-v1.2-TEST\net9.0-windows\Snake.sourcelink.json
