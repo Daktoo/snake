@@ -184,7 +184,6 @@ public:
                 paused.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 90);
                 window.draw(paused);
                 resumeBtn->draw(window);
-                quitBtn->draw(window);
             }
         } else if (state == GAME_OVER) {
             sf::Text msg("Game Over. Score: " + std::to_string(score), font, 32);
@@ -195,7 +194,6 @@ public:
             window.draw(msg);
             playAgainBtn->draw(window);
             menuBtn->draw(window);
-            quitBtn->draw(window);
         }
         window.display();
     }
