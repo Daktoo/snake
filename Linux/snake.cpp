@@ -68,11 +68,13 @@ public:
         scoreText.setCharacterSize(16);
         scoreText.setFillColor(sf::Color::White);
         scoreText.setPosition(10, 10);
-        playBtn = new Button(font, "Play", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 60);
+
+        playBtn = new Button(font, "Play", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 70);
         quitBtn = new Button(font, "Quit", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 + 10);
-        resumeBtn = new Button(font, "Resume", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 30);
-        playAgainBtn = new Button(font, "Play Again", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 20);
-        menuBtn = new Button(font, "Main Menu", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 + 50);
+        resumeBtn = new Button(font, "Resume", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 70);
+        playAgainBtn = new Button(font, "Play Again", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 60);
+        menuBtn = new Button(font, "Main Menu", WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 + 20);
+
         window.setFramerateLimit(60);
     }
 
@@ -180,7 +182,7 @@ public:
                 paused.setFillColor(sf::Color::Yellow);
                 sf::FloatRect tBounds = paused.getLocalBounds();
                 paused.setOrigin(tBounds.left + tBounds.width/2, tBounds.top + tBounds.height/2);
-                paused.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 50);
+                paused.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 90);
                 window.draw(paused);
                 resumeBtn->draw(window);
                 quitBtn->draw(window);
@@ -190,7 +192,7 @@ public:
             msg.setFillColor(sf::Color::Red);
             sf::FloatRect tBounds = msg.getLocalBounds();
             msg.setOrigin(tBounds.left + tBounds.width/2, tBounds.top + tBounds.height/2);
-            msg.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 100);
+            msg.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 120);
             window.draw(msg);
             playAgainBtn->draw(window);
             menuBtn->draw(window);
