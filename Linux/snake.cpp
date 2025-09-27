@@ -164,55 +164,49 @@ public:
         }
     }
 
-    void render() {
-        window.clear(sf::Color::Black);
+void render() {
+    window.clear(sf::Color::Black);
 
-        if (state == MAIN_MENU) {
-            sf::Text title("Dakto INC Snake!", font, 48);
-            title.setFillColor(sf::Color::White);
+    if (state == MAIN_MENU) {
+        sf::Text title("Dakto INC Snake", font, 48);
+        title.setFillColor(sf::Color::White);
+        sf::FloatRect textBounds = title.getLocalBounds();
+        title.setOrigin(textBounds.left + textBounds.width / 2, textBounds.top + textBounds.height / 2);
+        title.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 150);
 
-            sf::FloatRect textBounds = title.getLocalBounds();
-            title.setOrigin(textBounds.left + textBounds.width / 2, textBounds.top + textBounds.height / 2);
-            title.setPosition(WINDOW_WIDTH/2, WINDOW_HEIGHT/2 - 150);
-
-            window.draw(title);
-            playBtn->draw(window);
-            quitBtn->draw(window);
-        } else if (state == PLAYING || state == PAUSED) {
-            sf::RectangleShape rect(sf::Vector2f(CELL_SIZE-1, CELL_SIZE-1));
-            for (auto &s : snake) {
-                rect.setPosition(s.x * CELL_SIZE, s.y * CELL_SIZE);
-                window.draw(rect);
-            }
-            }
-
-            rect.setFillColor(sf::Color::Red);
-            rect.setPosition(food.x * CELL_SIZE, food.y * CELL_SIZE);
+        window.draw(title);
+        playBtn->draw(window);
+        quitBtn->draw(window);
+    } else if (state == PLAYING || state == PAUSED) {
+        sf::RectangleShape rect(sf::Vector2f(CELL_SIZE-1, CELL_SIZE-1));
+        rect.setFillColor(sf::Color::Green);
+        for (auto &s : snake) {
+            rect.setPosition(s.x * CELL_SIZE, s.y * CELL_SIZE);
             window.draw(rect);
-
-            scoreText.setString("Score: " + std::to_string(score));
-            window.draw(scoreText);
-
-            if (state == PAUSED) {
-                sf::Text paused("Game Paused", font, 28);
-                paused.setFillColor(sf::Color::Yellow);
-                paused.setPosition(WINDOW_WIDTH/2 - 100, WINDOW_HEIGHT/2 - 60);
-                window.draw(paused);
-                resumeBtn->draw(window);
-                quitBtn->draw(window);
-            }
-        } else if (state == GAME_OVER) {
-            sf::Text msg("Game Over. Score: " + std::to_string(score), font, 24);
-            msg.setFillColor(sf::Color::Red);
-            msg.setPosition(WINDOW_WIDTH/2 - 120, WINDOW_HEIGHT/2 - 100);
-            window.draw(msg);
-            playAgainBtn->draw(window);
-            menuBtn->draw(window);
-            quitBtn->draw(window);
         }
 
-        window.display();
+        rect.setFillColor(sf::Color::Red);
+        rect.setPosition(food.x * CELL_SIZE, food.y * CELL_SIZE);
+        window.draw(rect);
+
+        scoreText.setString("Score: " + std::to_string(score));
+        window.draw(scoreText);
+    } else if (state == GAME_OVER) {
+        sf::Text msg("Game Over. Score: " + std::to_string(score), font, 32);
+        msg.setFillColor(sf::Color::Red);
+        sf::FloatRect textBounds = msg.getLocalBounds();
+        msg.setOrigin(textBounds.left + textBounds.width / 2, textBounds.top + textBounds.height / 2);
+        msg.setPosition(WINDOW_WIDTH / 2, WINDOW_HEIGHT / 2 - 50);
+        window.draw(msg);
+
+        playAgainBtn->draw(window);
+        menuBtn->draw(window);
+        quitBtn->draw(window);
     }
+
+    window.display();
+}
+
 
     void run() {
         while (window.isOpen()) {
