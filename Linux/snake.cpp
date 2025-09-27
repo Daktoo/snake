@@ -25,9 +25,9 @@ public:
         snake.push_back({WINDOW_WIDTH / (2 * CELL_SIZE), WINDOW_HEIGHT / (2 * CELL_SIZE)});
         placeFood();
         font.openFromFile("/usr/share/fonts/truetype/dejavu/DejaVuSans-Bold.ttf");
-        scoreText = sf::Text("Score: 0", font, 24);
+        scoreText = sf::Text("", font, 24);
         scoreText.setFillColor(sf::Color::White);
-        scoreText.setPosition(sf::Vector2f(5.f, 0.f));
+        scoreText.setPosition({5.f, 0.f});
         std::srand(static_cast<unsigned int>(std::time(nullptr)));
     }
 
@@ -82,13 +82,13 @@ public:
 
     void render() {
         window.clear(sf::Color::Black);
-        sf::RectangleShape rect(sf::Vector2f(CELL_SIZE, CELL_SIZE));
+        sf::RectangleShape rect({CELL_SIZE, CELL_SIZE});
         rect.setFillColor(sf::Color::Red);
-        rect.setPosition(sf::Vector2f(food.x * CELL_SIZE, food.y * CELL_SIZE));
+        rect.setPosition({float(food.x * CELL_SIZE), float(food.y * CELL_SIZE)});
         window.draw(rect);
 
         rect.setFillColor(sf::Color::Green);
-        for (auto& s : snake) { rect.setPosition(sf::Vector2f(s.x * CELL_SIZE, s.y * CELL_SIZE)); window.draw(rect); }
+        for (auto& s : snake) { rect.setPosition({float(s.x * CELL_SIZE), float(s.y * CELL_SIZE)}); window.draw(rect); }
 
         window.draw(scoreText);
         window.display();
@@ -108,5 +108,4 @@ public:
 int main() {
     SnakeGame game;
     game.run();
-    return 0;
 }
